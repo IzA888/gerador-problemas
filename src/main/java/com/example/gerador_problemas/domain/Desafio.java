@@ -1,8 +1,11 @@
 package com.example.gerador_problemas.domain;
 
+import com.example.gerador_problemas.domain.dto.DesafioDTO;
+
 public interface Desafio {
 
-    Boolean validar(int resposta, int tentativa);
-    String getDescricao();
+    DesafioDTO gerar();
+    Boolean validar(int resposta, DesafioDTO desafio);
+    // String getDescricao();
     
 }

@@ -4,6 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.gerador_problemas.domain.Feedback;
+import com.example.gerador_problemas.domain.dto.DesafioDTO;
+
+import jakarta.annotation.PostConstruct;
 
 @Service
 public class DesafioService {
@@ -11,21 +14,29 @@ public class DesafioService {
     @Autowired
     private NumParesDesafio desafio;
 
-    private int tentativa = 1;
+    private DesafioDTO desafioAtual;
+
+    @PostConstruct
+    public void init(){
+        this.desafioAtual = desafio.gerar();
+    }
 
     public String submit(int resposta) {
-        tentativa++;
 
-        Boolean valido = desafio.validar(resposta, tentativa);
+        Boolean valido = desafio.validar(resposta, desafioAtual);
 
         if(valido){
-            return Feedback.sucesso(tentativa);
+            return Feedback.sucesso(desafioAtual.getTentativa());
         } else {
-            return Feedback.falha(tentativa);
+            return Feedback.falha(desafioAtual.getTentativa());
         }
     }
 
-    public String getDescricao() {
-        return desafio.getDescricao();
+    // public String getDescricao() {
+    //     return desafioAtual.getDescricao();
+    // }
+
+    public void novoDesafio(){
+        this.desafioAtual = desafio.gerar();
     }
 }
