@@ -1,16 +1,21 @@
 <!DOCTYPE html>
-<html xmlns="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Jogo de Lógica</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
 </head>
 <body>
-    
-    <h1>Jogo de Aprovação</h1>
-    <p>As regras não são explicadas.</p>
+    <button id="themeBtn" onclick="cycleMode()">🌗</button>
 
-    <a href="/desafio">
-        <button>Iniciar</button>
-    </a>
 
+    <div class="container">
+        <h1>Jogo de Aprovação</h1>
+        <p>As regras não são explicadas.</p>
+        
+        <a href="/desafio">
+            <button>Iniciar</button>
+        </a>
+    </div>
+    <script th:src="@{/js/tema.js}"></script>
 </body>
 </html>

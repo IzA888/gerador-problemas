@@ -1,7 +1,7 @@
 package com.example.gerador_problemas.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
-import com.example.gerador_problemas.service.DesafioLogica;
+import com.example.gerador_problemas.service.DesafioService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class DesafioController {
 
     @Autowired
-    private DesafioLogica desafioLogica;
+    private DesafioService desafio;
 
     @GetMapping
     public String desafio() {
@@ -26,7 +26,7 @@ public class DesafioController {
 
     @PostMapping("/submit")
     public String submit(@RequestParam int resposta, Model model) {
-        String certo = desafioLogica.submit(resposta);
+        String certo = desafio.submit(resposta);
 
         model.addAttribute("resultado", certo);
         

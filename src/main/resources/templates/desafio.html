@@ -1,17 +1,19 @@
 <html xmlns="http://www.thymeleaf.org">
-    <head>
-        <title>Desafio</title>
-    </head>
+    <link rel="stylesheet" th:href="@{/style.css}">
     <body>
-
-        <h2>Desafio</h2>
-
-        <p> Quanto é 2 + 2? </p>
-
-        <form action="/desafio/submit" method="post">
-            <input type="text" name="resposta" required>
-            <button>Enviar</button>
-        </form>
-
+        <div class="container">
+            <h1>Desafio</h2>
+    
+            <p> Quanto é 2 + 2? </p>
+    
+            <form action="/desafio/submit" method="post">
+                <input type="text" name="resposta" required>
+                <button>Enviar</button>
+            </form>
+            <a href="/">
+                    <button>Voltar ao início</button>
+            </a>
+        </div>
+        <script th:src="@{/js/tema.js}"></script>
     </body>
 </html>

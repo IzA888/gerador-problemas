@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import com.example.gerador_problemas.domain.Feedback;
 
 @Service
-public class DesafioLogica {
+public class DesafioService {
     
     @Autowired
     private NumParesDesafio desafio;

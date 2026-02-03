@@ -1,19 +1,22 @@
 <html xmlns="http://www.thymeleaf.org">
-    <head>Resultado</head>
+    <link rel="stylesheet" th:href="@{/style.css}">
     <body>
-
-        <h1>Resultado do desafio</h1>
-
-        <p th:text="${resultado}"></p>
-
-        <div>
-            <a href="/desafio">
-                <button>Tentar novamente</button>
-            </a>
-
-            <a href="/">
-                <button>Voltar ao início</button>
-            </a>
+        <div class="container">
+            <h2 class="resultado">Resultado do desafio</h2>
+    
+            <p th:text="${resultado}"></p>
+    
+            <div>
+                <a href="/desafio">
+                    <button>Tentar novamente</button>
+                </a>
+    
+    
+                <a href="/">
+                    <button>Voltar ao início</button>
+                </a>
+            </div>
         </div>
+        <script th:src="@{/js/tema.js}"></script>
     </body>
 </html>
