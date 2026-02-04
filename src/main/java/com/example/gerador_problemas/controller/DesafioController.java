@@ -1,6 +1,8 @@
 package com.example.gerador_problemas.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.example.gerador_problemas.domain.dto.DesafioDTO;
 import com.example.gerador_problemas.service.DesafioService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 
 
+
 @Controller
 @RequestMapping("/desafio")
 public class DesafioController {
@@ -20,7 +23,8 @@ public class DesafioController {
     private DesafioService desafio;
 
     @GetMapping
-    public String desafio() {
+    public String desafio(Model model) {
+        model.addAttribute("desafio", desafio.getDesafio());
         return "desafio";
     }
 
@@ -29,10 +33,15 @@ public class DesafioController {
         String certo = desafio.submit(resposta);
 
         model.addAttribute("resultado", certo);
+        model.addAttribute("desafio", desafio.getDesafio());
         
         return "resultado";
     }
     
+    @GetMapping("/novo")
+    public DesafioDTO novo() {   
+        return desafio.novoDesafio();
+    }
     
     
 }

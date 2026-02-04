@@ -7,6 +7,7 @@ public class DesafioDTO {
     private Integer a;
     private Integer b;
     private Integer tentativa = 1;
+    private String tipo;
 
     public DesafioDTO(String titulo, String pergunta, Integer a, Integer b) {
         this.titulo = titulo;
@@ -29,6 +30,18 @@ public class DesafioDTO {
 
     public Integer getTentativa() {
         return tentativa;
+    }
+
+    public Integer getA() {
+        return a;
+    }
+
+    public Integer getB() {
+        return b;
+    }
+
+    public String getTipo() {
+        return tipo;
     }
 
     

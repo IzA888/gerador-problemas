@@ -58,3 +58,12 @@ function activateEasterEgg() {
 
     setTimeout(() => egg.remove(), 3000);
 }
+
+function proximo() {
+    fetch("/desafio/novo").then(response => response.json()).then(data => atualizarTela(data));
+}
+
+function atualizarTela() {
+    document.getElementById("titulo").innerText = desafio.titulo;
+    document.getElementById("pergunta").innerText = desafio.pergunta;
+}

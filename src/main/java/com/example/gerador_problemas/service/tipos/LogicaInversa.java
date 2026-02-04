@@ -1,16 +1,23 @@
-package com.example.gerador_problemas.service;
+package com.example.gerador_problemas.service.tipos;
 
 import java.util.Random;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.example.gerador_problemas.domain.Desafio;
 import com.example.gerador_problemas.domain.dto.DesafioDTO;
 
 @Service
-public class NumParesDesafio implements Desafio {
+@Qualifier("logicaInversaDesafio")
+public class LogicaInversa implements Desafio{
 
     private final Random random = new Random();
+
+    @Override
+    public String getTipo(){
+        return "LOGICA_INVERSA";
+    }
 
     @Override
     public DesafioDTO gerar(){
@@ -18,8 +25,8 @@ public class NumParesDesafio implements Desafio {
         Integer b = random.nextInt(40) +20;
 
         return new DesafioDTO(
-            "Análise de Números Pares",
-            "Quantos números pares existem entre " + a + " e " + b + "?",
+            "Lógica Inversa",
+            "Digite um número Ímpar",
             a,
             b
         );
@@ -31,18 +38,13 @@ public class NumParesDesafio implements Desafio {
         Boolean correto;
 
         if ( tentativa <= 2){
-            correto = resposta % 2 == 0;
+            correto = resposta % 2 != 0;
         } else {
-            correto = resposta % 4 == 0;
+            correto = resposta % 3 != 0;
         }
 
         desafio.incrementarTentativa();
         return correto;
     }
-
-    // @Override 
-    // public String getDescricao(){
-    //     return "Escolha um número par.";
-    // }
     
 }
