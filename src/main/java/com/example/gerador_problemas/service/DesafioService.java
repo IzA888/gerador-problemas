@@ -3,7 +3,6 @@ package com.example.gerador_problemas.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.gerador_problemas.domain.Desafio;
 import com.example.gerador_problemas.domain.Feedback;
 import com.example.gerador_problemas.domain.dto.DesafioDTO;
 

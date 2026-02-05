@@ -28,7 +28,9 @@ public class NumParesDesafio implements Desafio {
             "Análise de Números Pares",
             "Quantos números pares existem entre " + a + " e " + b + "?",
             a,
-            b
+            b,
+            this.getTipo()
+
         );
     }
 

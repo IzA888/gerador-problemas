@@ -60,10 +60,10 @@ function activateEasterEgg() {
 }
 
 function proximo() {
-    fetch("/desafio/novo").then(response => response.json()).then(data => atualizarTela(data));
-}
-
-function atualizarTela() {
-    document.getElementById("titulo").innerText = desafio.titulo;
-    document.getElementById("pergunta").innerText = desafio.pergunta;
+    fetch("/desafio/novo").then(response => response.json())
+        .then(data => {    
+            document.getElementById("titulo").innerText = data.titulo;
+            document.getElementById("pergunta").innerText = data.pergunta;
+            console.log("DEPOIS");
+        });
 }

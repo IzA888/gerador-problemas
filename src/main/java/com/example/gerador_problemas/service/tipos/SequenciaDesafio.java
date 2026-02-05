@@ -28,7 +28,8 @@ public class SequenciaDesafio implements Desafio{
             "Sequência Lógica",
             "Qual o próximo número da sequência: " + a + ", " + b + "?",
             a,
-            b
+            b,
+            this.getTipo()
         );
     }
 

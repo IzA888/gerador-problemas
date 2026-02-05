@@ -28,7 +28,9 @@ public class LogicaInversa implements Desafio{
             "Lógica Inversa",
             "Digite um número Ímpar",
             a,
-            b
+            b,
+            this.getTipo()
+
         );
     }
 

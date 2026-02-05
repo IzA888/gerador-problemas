@@ -9,11 +9,12 @@ public class DesafioDTO {
     private Integer tentativa = 1;
     private String tipo;
 
-    public DesafioDTO(String titulo, String pergunta, Integer a, Integer b) {
+    public DesafioDTO(String titulo, String pergunta, Integer a, Integer b, String tipo) {
         this.titulo = titulo;
         this.pergunta = pergunta;
         this.a = a;
         this.b = b;
+        this.tipo = tipo;
     }
 
     public void incrementarTentativa(){
