@@ -1,312 +1,299 @@
-Perfeito. Abaixo está a **documentação completa do projeto**, organizada como **MVC (Model–View–Controller)**, **adaptada exatamente ao que você construiu** (Spring Boot + desafios automáticos + estado + view dinâmica).
+# 📘 Documentação Técnica — Gerador de Desafios
 
-Pode colar direto como **`README.md`** do projeto.
+## 1. Visão Geral
 
----
+O **Gerador de Desafios** é uma aplicação web construída com **Spring Boot**, seguindo rigorosamente o padrão **MVC (Model–View–Controller)** e utilizando o **Strategy Pattern** para permitir a criação dinâmica de diferentes tipos de desafios lógicos e matemáticos.
 
-# 🎮 Projeto — Jogo de Desafios Lógicos (Arquitetura MVC)
-
-## 📌 Visão Geral
-
-Este projeto é um **jogo educacional de lógica**, desenvolvido em **Java com Spring Boot**, que gera **desafios automaticamente**, valida respostas de forma progressiva e apresenta feedback dinâmico ao usuário.
-
-A aplicação segue rigorosamente o padrão **MVC (Model–View–Controller)**, separando responsabilidades e facilitando manutenção, testes e evolução do sistema.
+O sistema foi projetado para funcionar como um **fluxo de jogo**, onde cada desafio é gerado dinamicamente, apresentado ao usuário e validado conforme sua própria regra interna.
 
 ---
 
-## 🧠 Conceito Central
+## 2. Objetivos do Projeto
 
-* O sistema **gera desafios dinamicamente**
-* A **lógica nunca fica na view**
-* A view **não sabe como a resposta é validada**
-* O desafio pode **mudar de regra conforme tentativas**
-* O usuário interage apenas com perguntas e feedback
+* Gerar desafios de forma automática e aleatória
+* Permitir múltiplos tipos de desafios sem alterar o fluxo principal
+* Separar claramente responsabilidades (MVC)
+* Facilitar manutenção, expansão e testes
+* Simular um fluxo de jogo interativo
 
 ---
 
-## 🏗️ Arquitetura MVC
+## 3. Arquitetura Utilizada
+
+### 3.1 Padrão MVC
 
 ```
-src/main/java
-└── com.example.jogo
-    ├── controller
-    │   └── DesafioController.java
-    │
-    ├── service
-    │   ├── DesafioService.java
-    │   ├── Desafio.java
-    │   └── NumParesDesafio.java
-    │
-    ├── model
-    │   └── DesafioDTO.java
-    │
-    └── util
-        └── Feedback.java
+Controller → Service → Domain → View
 ```
 
+* **Controller**: recebe requisições HTTP e controla o fluxo
+* **Service**: orquestra regras de negócio
+* **Domain**: contém a lógica dos desafios (Strategy)
+* **View**: interface do usuário (Thymeleaf)
+
+---
+
+## 4. Organização de Pacotes
+
 ```
-src/main/resources
-├── templates
-│   ├── challenge.html
-│   └── result.html
+com.example.gerador_problemas
 │
-└── static
-    ├── css
-    │   └── style.css
-    └── js
-        └── tema.js
+├── controller
+│   └── DesafioController
+|   └── MainController
+│
+├── service
+│   ├── DesafioService
+│   ├── GeradorDesafios
+│   └── tipos
+│       ├── NumParesDesafio
+│       ├── SequenciaDesafio
+│       └── LogicaInversa
+│
+├── domain
+│   ├── Desafio (interface)
+|   └── Feedback
+│   └── dto
+│       └── DesafioDTO
+│
+│
+└── util
+
+resources
+|
+├── static
+|   └──style.css
+|   └── js
+|       └── tema.js
+|
+├── templates
+│   └── desafio.html
+|   └── index.html
+|   └── resultado.html
 ```
 
 ---
 
-## 🧩 MODEL (Dados e Estado)
+## 5. Domain Layer (Modelo)
 
-### 📦 `DesafioDTO`
+### 5.1 Interface `Desafio`
 
-Responsável por **transportar dados do desafio** entre Service e View.
+Representa o **contrato** para qualquer tipo de desafio.
 
-```java
-public class DesafioDTO {
+Responsabilidades:
 
-    private final String descricao;
-    private int tentativa = 1;
-
-    public DesafioDTO(String descricao) {
-        this.descricao = descricao;
-    }
-
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public int getTentativa() {
-        return tentativa;
-    }
-
-    public void incrementarTentativa() {
-        this.tentativa++;
-    }
-}
-```
-
-### Responsabilidades do Model
-
-✔ Armazenar estado do desafio
-✔ Controlar número de tentativas
-✔ Não conter regras de validação complexas
-✔ Não conhecer View ou Controller
-
----
-
-## 🧠 SERVICE (Regras de Negócio)
-
-### 🔌 Interface `Desafio`
-
-Define o **contrato** de qualquer desafio do sistema.
+* Gerar um desafio
+* Validar a resposta do usuário
+* Informar seu tipo
 
 ```java
 public interface Desafio {
     DesafioDTO gerar();
     boolean validar(int resposta, DesafioDTO dto);
+    String getTipo();
 }
 ```
 
 ---
 
-### 🔢 `NumParesDesafio`
+### 5.2 Implementações (`Strategy Pattern`)
 
-Implementação concreta de um desafio com **dificuldade progressiva**.
+Cada classe em `service.tipos` representa uma estratégia independente.
+
+Exemplo:
+
+* `NumParesDesafio`
+* `SequenciaDesafio`
+* `LogicaInversa`
+
+Essas classes:
+
+* São anotadas com `@Service`
+* São automaticamente registradas pelo Spring
+* Podem ser adicionadas sem alterar código existente
+
+---
+
+### 5.3 `DesafioDTO`
+
+Objeto de transferência de dados responsável por levar informações do desafio para a View.
+
+Campos comuns:
+
+* `titulo`
+* `pergunta`
+* `tentativa`
+* `tipo`
+
+O DTO **não contém lógica de negócio**.
+
+---
+
+## 6. Service Layer (Regra de Negócio)
+
+### 6.1 `GeradorDesafios`
+
+Classe central do sistema.
+
+Responsabilidades:
+
+* Receber todas as implementações de `Desafio`
+* Sortear um desafio aleatoriamente
+* Manter o estado do desafio atual
+* Validar respostas
 
 ```java
 @Service
-public class NumParesDesafio implements Desafio {
+public class GeradorDesafios {
 
-    @Override
-    public DesafioDTO gerar() {
-        return new DesafioDTO(
-            "Digite um número que satisfaça a regra atual."
-        );
+    private final Map<String, Desafio> desafios;
+    private final Random random = new Random();
+
+    private Desafio desafioAtual;
+    private DesafioDTO desafioDTOAtual;
+
+    public GeradorDesafios(List<Desafio> lista) {
+        this.desafios = lista.stream()
+            .collect(Collectors.toMap(Desafio::getTipo, d -> d));
     }
 
-    @Override
-    public boolean validar(int resposta, DesafioDTO dto) {
+    public DesafioDTO gerar() {
+        List<Desafio> valores = new ArrayList<>(desafios.values());
+        desafioAtual = valores.get(random.nextInt(valores.size()));
+        desafioDTOAtual = desafioAtual.gerar();
+        return desafioDTOAtual;
+    }
 
-        int tentativa = dto.getTentativa();
-        boolean valido;
+    public boolean validar(int resposta) {
+        return desafioAtual.validar(resposta, desafioDTOAtual);
+    }
 
-        if (tentativa <= 2) {
-            valido = resposta % 2 == 0;
-        } else {
-            valido = resposta % 4 == 0;
-        }
-
-        dto.incrementarTentativa();
-        return valido;
+    public DesafioDTO getAtual() {
+        return desafioDTOAtual;
     }
 }
 ```
 
-📌 A regra **muda silenciosamente**, sem alterar a pergunta.
-
 ---
 
-### 🧠 `DesafioService`
+### 6.2 `DesafioService`
 
-Gerencia o **estado atual do jogo**.
+Camada intermediária entre Controller e Gerador.
+
+Responsabilidades:
+
+* Iniciar o jogo
+* Delegar validação
+* Fornecer feedback
 
 ```java
 @Service
 public class DesafioService {
 
     @Autowired
-    private NumParesDesafio desafio;
-
-    private DesafioDTO desafioAtual;
+    private GeradorDesafios gerador;
 
     @PostConstruct
     public void init() {
-        this.desafioAtual = desafio.gerar();
+        gerador.gerar();
     }
 
     public String submit(int resposta) {
-
-        boolean valido = desafio.validar(resposta, desafioAtual);
-
-        if (valido) {
-            return Feedback.sucesso(desafioAtual.getTentativa());
-        } else {
-            return Feedback.falha(desafioAtual.getTentativa());
-        }
+        boolean valido = gerador.validar(resposta);
+        return valido
+            ? Feedback.sucesso(gerador.getAtual().getTentativa())
+            : Feedback.falha(gerador.getAtual().getTentativa());
     }
 
-    public String getDescricao() {
-        return desafioAtual.getDescricao();
-    }
-
-    public void novoDesafio() {
-        this.desafioAtual = desafio.gerar();
+    public DesafioDTO novo() {
+        return gerador.gerar();
     }
 }
 ```
 
-### Responsabilidades do Service
+---
 
-✔ Centralizar lógica de negócio
-✔ Manter estado do desafio
-✔ Validar respostas
-✔ Nunca acessar HTML ou requisições HTTP
+## 7. Controller Layer
+
+### 7.1 `DesafioController`
+
+Responsável por:
+
+* Receber requisições HTTP
+* Enviar dados para a View
+* Controlar navegação
+
+Fluxos principais:
+
+* Exibir desafio atual
+* Submeter resposta
+* Gerar novo desafio
 
 ---
 
-## 🎯 CONTROLLER (Fluxo da Aplicação)
+## 8. View Layer (Thymeleaf)
 
-### `DesafioController`
+A interface utiliza **Thymeleaf**, integrando-se diretamente ao modelo.
 
-Responsável por **ligar a View ao Service**.
-
-```java
-@Controller
-public class DesafioController {
-
-    @Autowired
-    private DesafioService service;
-
-    @GetMapping("/desafio")
-    public String desafio(Model model) {
-        model.addAttribute("descricao", service.getDescricao());
-        return "challenge";
-    }
-
-    @PostMapping("/desafio")
-    public String responder(
-        @RequestParam int resposta,
-        Model model
-    ) {
-        String resultado = service.submit(resposta);
-        model.addAttribute("resultado", resultado);
-        return "result";
-    }
-}
+```html
+<h2 th:text="'Desafio ' + ${desafio.titulo}">Desafio</h2>
+<p th:text="${desafio.pergunta}"></p>
 ```
 
-### Responsabilidades do Controller
-
-✔ Receber requisições HTTP
-✔ Enviar dados para a View
-✔ Nunca conter regras de negócio
-✔ Nunca validar lógica
+O HTML é desacoplado da lógica de negócio.
 
 ---
 
-## 🎨 VIEW (Interface do Usuário)
+## 9. Fluxo Completo do Sistema
 
-### 🧾 `challenge.html`
-
-* Exibe a descrição do desafio
-* Coleta resposta do usuário
-* Não conhece regras internas
-
-### 🧾 `result.html`
-
-* Exibe feedback do sistema
-* Não valida resposta
+```
+Usuário → Controller → Service → Gerador → Desafio
+                                  ↓
+                               DesafioDTO
+                                  ↓
+                                View
+```
 
 ---
 
-## 🎨 Tema & UX
+## 10. Extensibilidade do Sistema
 
-* Tema Dark como padrão (`:root`)
-* Modo Light e Caótico via JS
-* Estado do tema salvo em `localStorage`
-* Easter eggs e ícones dinâmicos
+Para adicionar um novo desafio:
 
----
+1. Criar uma nova classe que implemente `Desafio`
+2. Anotar com `@Service`
+3. Implementar `gerar()`, `validar()` e `getTipo()`
 
-## ✅ Benefícios da Arquitetura
-
-✔ MVC bem definido
-✔ Fácil adicionar novos desafios
-✔ Sem acoplamento entre camadas
-✔ Lógica invisível ao usuário
-✔ Ideal para jogos educacionais
-✔ Escalável para API REST
+Nenhuma outra parte do sistema precisa ser alterada.
 
 ---
 
-## 🚀 Possíveis Evoluções
+## 11. Boas Práticas Aplicadas
 
-* Gerador automático de desafios
-* Modo 😈 com regras instáveis
-* Ranking de usuários
-* Histórico de tentativas
+* ✔ MVC bem definido
+* ✔ Strategy Pattern
+* ✔ Inversão de Controle (Spring)
+* ✔ DTO para transporte de dados
+* ✔ Baixo acoplamento
+* ✔ Alta coesão
+
+---
+
+## 12. Possíveis Evoluções
+
+* Persistência por sessão
+* Pontuação e ranking
 * API REST
-* Persistência em banco
-* Desafios “sem resposta correta”
+* Front-end SPA
+* Modo competitivo
 
 ---
 
-## 🧠 Conclusão
+## 13. Conclusão
 
-Este projeto não é apenas um jogo — é um **sistema de decisão**, onde:
+Este projeto demonstra domínio de:
 
-> o usuário interage com efeitos
-> mas nunca vê a causa
-
-Uma aplicação ideal para:
-
-* ensino de lógica
-* experimentos cognitivos
-* jogos educacionais
-* UX comportamental
-
----
-
-Se quiser, no próximo passo posso:
-
-* revisar o README como **documento acadêmico**
-* transformar isso em **TCC prático**
-* adicionar **diagrama MVC**
-* criar **novo desafio plugável**
-* evoluir para **REST API**
-
-👉 Qual o próximo passo?
+* Arquitetura de software
+* Padrões de projeto
+* Spring Boot
+* Organização profissional de código
