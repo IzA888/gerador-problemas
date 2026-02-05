@@ -142,37 +142,6 @@ Responsabilidades:
 * Manter o estado do desafio atual
 * Validar respostas
 
-```java
-@Service
-public class GeradorDesafios {
-
-    private final Map<String, Desafio> desafios;
-    private final Random random = new Random();
-
-    private Desafio desafioAtual;
-    private DesafioDTO desafioDTOAtual;
-
-    public GeradorDesafios(List<Desafio> lista) {
-        this.desafios = lista.stream()
-            .collect(Collectors.toMap(Desafio::getTipo, d -> d));
-    }
-
-    public DesafioDTO gerar() {
-        List<Desafio> valores = new ArrayList<>(desafios.values());
-        desafioAtual = valores.get(random.nextInt(valores.size()));
-        desafioDTOAtual = desafioAtual.gerar();
-        return desafioDTOAtual;
-    }
-
-    public boolean validar(int resposta) {
-        return desafioAtual.validar(resposta, desafioDTOAtual);
-    }
-
-    public DesafioDTO getAtual() {
-        return desafioDTOAtual;
-    }
-}
-```
 
 ---
 
@@ -186,30 +155,6 @@ Responsabilidades:
 * Delegar validação
 * Fornecer feedback
 
-```java
-@Service
-public class DesafioService {
-
-    @Autowired
-    private GeradorDesafios gerador;
-
-    @PostConstruct
-    public void init() {
-        gerador.gerar();
-    }
-
-    public String submit(int resposta) {
-        boolean valido = gerador.validar(resposta);
-        return valido
-            ? Feedback.sucesso(gerador.getAtual().getTentativa())
-            : Feedback.falha(gerador.getAtual().getTentativa());
-    }
-
-    public DesafioDTO novo() {
-        return gerador.gerar();
-    }
-}
-```
 
 ---
 
@@ -297,3 +242,42 @@ Este projeto demonstra domínio de:
 * Padrões de projeto
 * Spring Boot
 * Organização profissional de código
+
+---
+
+## 14. Como executar
+* Requisitos:
+
+        -- Java 17 instalado. 
+        -- Use o Maven instalado ou o Maven Wrapper incluído no projeto.
+
+* Executar com Maven Wrapper (Windows):
+
+```
+mvnw.cmd spring-boot:run
+```
+
+* Executar com Maven Wrapper (Linux/macOS):
+
+```
+./mvnw spring-boot:run
+```
+* Gerar o JAR e executar:
+
+Windows:
+```
+mvnw.cmd clean package -DskipTests
+java -jar target/gerador-problemas-0.0.1-SNAPSHOT.jar
+```
+
+Linux/macOS:
+```
+./mvnw clean package -DskipTests
+java -jar target/gerador-problemas-0.0.1-SNAPSHOT.jar
+
+```
+* Executar no IDE:
+
+Importe o projeto como Maven e execute a classe `com.example.gerador_problemas.GeradorProblemasApplication` como aplicação Java.
+
+Acessar a aplicação: abra http://localhost:8080 no navegador após a inicialização.
